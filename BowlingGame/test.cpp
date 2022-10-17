@@ -5,94 +5,73 @@
 class BowlingGameTest: public ::testing::Test
 {
 public:
-	void roll_strike();
-	void roll_spare(int pin1, int pin2);
-	void roll_many(int frame, int pin);
     BowlingGame game;
+    void roll_many(int frame, int pins);
+    void roll_spare(int pin1, int pin2);
 private:
 };
 
-void BowlingGameTest::roll_many(int times, int pin)
+void BowlingGameTest::roll_many(int frame, int pins)
 {
-	for (int i=0; i<times; i++)
-		game.roll(pin);
-}
-
-void BowlingGameTest::roll_strike()
-{
-	game.roll(10);
+    for (int i=0; i<frame; i++)
+        game.roll(pins);
 }
 
 void BowlingGameTest::roll_spare(int pin1, int pin2)
 {
-	game.roll(pin1);
-	game.roll(pin2);
+    game.roll(pin1);
+    game.roll(pin2);
 }
 
-TEST(bowling_game_test, test_zero_score)
+TEST(bowling_game_test, test_all_zero)
 {
     BowlingGame game;
 
-	for (int i=0; i<20; i++)
-		game.roll(0);
+    for (int i=0; i<20; i++)
+        game.roll(0);
 
 	ASSERT_EQ(0, game.score());
 }
 
-TEST_F(BowlingGameTest, test_zero_score)
+TEST_F(BowlingGameTest, test_roll_many)
 {
-	for (int i=0; i<20; i++)
-		game.roll(0);
+    roll_many(20, 1);
 
-	ASSERT_EQ(0, game.score());
-}
-
-TEST_F(BowlingGameTest, roll_many_test)
-{
-	roll_many(20, 1);
 	ASSERT_EQ(20, game.score());
 }
 
-TEST_F(BowlingGameTest, roll_spare)
+TEST_F(BowlingGameTest, test_spare)
 {
-	roll_spare(4, 6);
-	roll_many(18, 1);
-	ASSERT_EQ(29, game.score());
+    roll_many(1, 9);
+    roll_many(1, 1);
+    roll_many(1, 3);
+    roll_many(17, 0);
+
+	ASSERT_EQ(16, game.score());
 }
 
-TEST_F(BowlingGameTest, roll_two_spare)
+TEST_F(BowlingGameTest, test_one_spare)
 {
-	roll_spare(5, 5);
-	roll_spare(5, 5);
-	roll_many(16, 1);
-	ASSERT_EQ(42, game.score());
+    roll_spare(1, 9);
+    roll_many(1, 3);
+    roll_many(17, 0);
+
+	ASSERT_EQ(16, game.score());
 }
 
-TEST_F(BowlingGameTest, roll_strike)
+TEST_F(BowlingGameTest, test_one_strike)
 {
-	roll_strike();
-	roll_many(18, 1);
-	ASSERT_EQ(30, game.score());
+    game.roll(10);
+    roll_many(1, 3);
+    roll_many(1, 4);
+    roll_many(16, 0);
+
+	ASSERT_EQ(24, game.score());
 }
 
-TEST_F(BowlingGameTest, roll_spare_at_end_frame)
+TEST_F(BowlingGameTest, test_perfect_game)
 {
-	roll_many(18, 1);
-	roll_spare(4, 6);
-	roll_many(1, 5);
-	ASSERT_EQ(33, game.score());
-}
+    roll_many(12, 10);
 
-TEST_F(BowlingGameTest, roll_strike_at_end_frame)
-{
-	roll_many(18, 1);
-	roll_strike();
-	roll_many(2, 5);
-	ASSERT_EQ(38, game.score());
-}
-
-TEST_F(BowlingGameTest, roll_perfect_game)
-{
-	roll_many(12, 10);
 	ASSERT_EQ(300, game.score());
 }

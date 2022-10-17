@@ -3,76 +3,67 @@
 #include <gmock/gmock.h>
 #include "BowlingGame.hpp"
 
+void BowlingGame::roll(int pin)
+{
+	pins_per_roll.push_back(pin);
+}
+
+bool BowlingGame::is_spare(std::vector<int>::iterator &roll_index)
+{
+	if (*(roll_index) + *(roll_index+1) == 10)
+		return true;
+
+	return false;		
+}
+
+bool BowlingGame::is_strike(std::vector<int>::iterator &roll_index)
+{
+	if (*(roll_index) == 10)
+		return true;
+
+	return false;		
+}
+
+int BowlingGame::open_frame_score(std::vector<int>::iterator &roll_index)
+{
+	return *(roll_index) + *(roll_index+1);
+}
+
+int BowlingGame::strike_bonus(std::vector<int>::iterator &roll_index)
+{
+	return *(roll_index+1) + *(roll_index+2);
+}			
+
+int BowlingGame::spare_bonus(std::vector<int>::iterator &roll_index)
+{
+	return *(roll_index+2);
+}			
+
 int BowlingGame::score()
 {
 	int score = 0;
-	auto pos =  roll_score.begin();
+	auto roll_index =  pins_per_roll.begin();
 
-	for (int i=0; i<frames; i++)
-	{	
-		score += score_per_frame(pos);
-		move_to_next_frame(pos);
+	for (int frame=0; frame<10; frame++)
+	{
+		if (is_strike(roll_index))
+		{
+			score += 10 + strike_bonus(roll_index);
+			roll_index ++;			
+		}			
+		else if (is_spare(roll_index))
+		{
+			score += 10 + spare_bonus(roll_index);
+			roll_index += 2;			
+		}			
+		else
+		{
+			score += open_frame_score(roll_index);
+			roll_index += 2;			
+		}
 	}
 
 	return score;
-}
-
-int BowlingGame::score_per_frame(std::vector<int>::iterator &pos)
-{
-	if (is_strike(pos))
-	{
-		return strike_score(pos);
-	}			
-	else if (is_spare(pos))
-	{
-		return spare_score(pos);
-	}			
-	else
-	{
-		return open_frame_score(pos);
-	}
-}		
-
-void BowlingGame::move_to_next_frame(std::vector<int>::iterator &pos)
-{
-	if (is_strike(pos))
-	{
-		pos += 1;
-	}			
-	else
-	{
-		pos += 2;
-	}			
-}		
-
-int BowlingGame::spare_score(const std::vector<int>::iterator pos)
-{
-	return 10 + *(pos+2);
-}		
-
-int BowlingGame::strike_score(const std::vector<int>::iterator pos)
-{
-	return 10 + *(pos+1) + *(pos+2);
-}		
-
-int BowlingGame::open_frame_score(const std::vector<int>::iterator pos)
-{
-	return *pos + *(pos+1);
-}		
-
-bool BowlingGame::is_strike(const std::vector<int>::iterator pos)
-{
-	return *pos == 10; 
-}
-
-bool BowlingGame::is_spare(const std::vector<int>::iterator pos)
-{
-	return ((*pos + *(pos+1)) == 10);
-}
-
-void BowlingGame::roll(int pin)
-{
-	roll_score.push_back(pin);
 }
 
 int main(int argc, char** argv)
