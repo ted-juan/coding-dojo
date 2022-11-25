@@ -3,32 +3,14 @@
 #include <gmock/gmock.h>
 #include "PrimeFactor.hpp"
 
-std::vector<int> PrimeFactors::generate(int value)
+const std::vector<int> PrimeFactors::generate(int value)
 {
-	std::vector<int> primes;
-#if 1	
-	for (int candidate = 2; value > 1; candidate++)
-	{
-		for (;value % candidate == 0; value /= candidate)
-		{
-			primes.push_back(candidate);
-		}
-	}			
-#else
-	int candidate = 2;
+	for (int candicate=2; value > 1; candicate++)
+		for (;value % candicate == 0; value /= candicate)
+			factors.push_back(candicate);
 
-	while (value > 1)
-	{
-		if (value % candidate == 0)
-		{
-			primes.push_back(candidate);
-			value /= candidate;
-			continue;
-		}
-		candidate++;
-	}			
-#endif
-	return primes;
+	return factors;
+
 }
 
 int main(int argc, char** argv)

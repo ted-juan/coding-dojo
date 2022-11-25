@@ -3,6 +3,7 @@ class PrimeFactors
 public:
 	PrimeFactors(){}; 
 	~PrimeFactors(){}; 
-	std::vector<int> generate(int value);
+	const std::vector<int> generate(int value);
 private:
+	std::vector<int> factors;
 };
