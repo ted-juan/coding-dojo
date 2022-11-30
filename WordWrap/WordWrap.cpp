@@ -16,10 +16,12 @@ std::string WordWrap::wrap(std::string s)
 	if (s.length() <= _column)
 		return s;		
 
-	int found = s.find(" ");
+	int space = s.substr(0, _column).find_last_of(" ");
 
-	if ((found > 0) && (found <= (int)_column))
-		return break_line(s, found, 1);
+	if (space != -1) 
+		return break_line(s, space, 1);
+	else if (s.at(_column) == ' ') 
+		return break_line(s, _column, 1);
 	else		
 		return break_line(s, _column, 0);
 

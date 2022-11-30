@@ -13,10 +13,8 @@ public:
 private:
 };
 
-TEST(word_wrap, test_null)
+TEST(word_wrap, wrap_empty_string)
 {
-    WordWrap ww;
-
 	ASSERT_EQ("", ww.wrapper("", 1));
 }
 
@@ -30,32 +28,32 @@ TEST_F(WordWrapTest, split_one_word)
 	ASSERT_EQ("wo\nrd", ww.wrapper("word", 2));
 }
 
-TEST_F(WordWrapTest, split_long_word)
+TEST_F(WordWrapTest, split_one_word_many_times)
 {
 	ASSERT_EQ("wo\nrd\nwo\nrd", ww.wrapper("wordword", 2));
 }
 
-TEST_F(WordWrapTest, split_two_word_with_space)
+TEST_F(WordWrapTest, split_at_boundary)
 {
-	ASSERT_EQ("word\nword", ww.wrapper("word word", 4));
+	ASSERT_EQ("word\nword", ww.wrapper("word word", 5));
 }
 
-TEST_F(WordWrapTest, split_two_word_and_two_part_with_space)
-{
-	ASSERT_EQ("wo\nrd\nwo\nrd", ww.wrapper("word word", 2));
-}
-
-TEST_F(WordWrapTest, split_two_word_and_mixed_space)
-{
-	ASSERT_EQ("wor\nd\nwor\nd", ww.wrapper("word word", 3));
-}
-
-TEST_F(WordWrapTest, split_two_word_mixed_space2)
+TEST_F(WordWrapTest, split_one_word_after_boundary)
 {
 	ASSERT_EQ("word\nword", ww.wrapper("word word", 6));
 }
 
-TEST_F(WordWrapTest, split_two_word_mixed_space3)
+TEST_F(WordWrapTest, split_one_word_before_boundary)
 {
-	ASSERT_EQ("word word", ww.wrapper("word word", 9));
+	ASSERT_EQ("wor\nd\nwor\nd", ww.wrapper("word word", 3));
+}
+
+TEST_F(WordWrapTest, split_one_word_just_before_boundary)
+{
+	ASSERT_EQ("word\nword", ww.wrapper("word word", 4));
+}
+
+TEST_F(WordWrapTest, split_two_word_many_times)
+{
+	ASSERT_EQ("wo\nrd\nwo\nrd", ww.wrapper("word word", 2));
 }
